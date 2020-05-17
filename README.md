@@ -57,7 +57,27 @@ I then ran the script with multiple number of threads and plotted the execution 
 
 ![Performance chart](performance_chart.png)
 
-TODO add values and STD DEV
+**It's clear that going past 15 threads is not worth it in this case, as the time taken is the same, if not higher.**
+
+This chart has been made with the average of 3 runs for each number of threads, the data is in the table below:
+
+| Number of threads | Average run time (s) |
+|-------------------|----------------------|
+| 1                 | 66.344               |
+| 2                 | 40.107               |
+| 3                 | 37.052               |
+| 5                 | 36.959               |
+| 10                | 36.694               |
+| 15                | 26.149               |
+| 20                | 29.735               |
+| 30                | 26.316               |
+| 40                | 29.288               |
+| 50                | 28.023               |
+| 60                | 24.855               |
+| 85                | 24.028               |
+| 100               | 26.974               |
+
+It must also be said that the run time is variable. The standard deviation of 5 data points is 2.1663 (relative standard deviation `RDS=7.76%`)
 
 #### CPU & Disk utilisation
 
