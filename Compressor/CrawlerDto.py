@@ -13,5 +13,8 @@ class CrawlerDto(object):
 			return element
 		return None
 
+	def empty(self) -> bool:
+		return len(self.files) == 0
+
 	def get_files_count(self) -> int:
 		return len(self.files)
