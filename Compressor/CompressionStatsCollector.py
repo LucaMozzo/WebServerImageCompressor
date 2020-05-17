@@ -3,24 +3,27 @@ class CompressionStatsCollector(object):
 	UNITS = ['B', 'KB', 'MB', 'GB', 'TB']
 
 	def __init__(self):
-		self._totalBytesIn = 0
-		self._totalBytesOut = 0
+		self._total_bytes_in = 0
+		self._total_bytes_out = 0
 
 	def add_image_data(self, bytes_before: int, bytes_after: int):
-		self._totalBytesIn += bytes_before
-		self._totalBytesOut += bytes_after
+		self._total_bytes_in += bytes_before
+		self._total_bytes_out += bytes_after
 
 	def get_total_bytes_in(self) -> str:
-		return CompressionStatsCollector.__convert_unit(self._totalBytesIn)
+		return CompressionStatsCollector.__convert_unit(self._total_bytes_in)
 
 	def get_total_bytes_out(self) -> str:
-		return CompressionStatsCollector.__convert_unit(self._totalBytesOut)
+		return CompressionStatsCollector.__convert_unit(self._total_bytes_out)
 
 	def get_diff(self) -> str:
-		return CompressionStatsCollector.__convert_unit(self._totalBytesOut - self._totalBytesIn)
+		return CompressionStatsCollector.__convert_unit(self._total_bytes_in - self._total_bytes_out)
 
 	def get_actual_compression_ratio_percentage(self) -> float:
-		return round(self._totalBytesIn / float(self._totalBytesOut) * 100, 2)
+		if self._total_bytes_in == 0:
+			return 0
+		else:
+			return round(self._total_bytes_out / float(self._total_bytes_in) * 100, 2)
 
 	@staticmethod
 	def __convert_unit(input: int) -> str:

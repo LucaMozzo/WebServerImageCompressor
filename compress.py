@@ -1,6 +1,8 @@
 import sys
-import time
 from console_progressbar import ProgressBar
+
+from Compressor.Compressor import Compressor
+
 
 def main():
     if len(sys.argv) < 3:
@@ -8,6 +10,11 @@ def main():
                                                                  'file or folder\n2. Destination file or folder\n3. '
                                                                  'Output quality (1-100)\n\nExample: python compress.py '
                                                                  './source ./output 75')
+        return
+
+    compressor = Compressor(sys.argv[0], sys.argv[1], int(sys.argv[2])) #TODO check if valid paths, if quality is integer
+    compressor.compress()
+
 
 
 if __name__ == "__main__":

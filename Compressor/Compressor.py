@@ -1,34 +1,52 @@
 from concurrent.futures import ThreadPoolExecutor
 import time
-from Compressor.CrawlerDto import CrawlerDto
+
+from Compressor.CompressionStatsCollector import CompressionStatsCollector
 from Compressor.FileSystemUtils import FileSystemUtils
 from Compressor.ImageManipulator import ImageManipulator
 
 
 class Compressor(object):
 
-	def __init__(self, quality):
+	def __init__(self, base_path_in: str, base_path_out: str, quality: int, log_path: str = None):
 		self.failures = []
+		self.base_path_in = base_path_in
+		self.base_path_out = base_path_out
 		self.quality = quality
+		self.stats_collector = CompressionStatsCollector()
+		self.image_manipulator = ImageManipulator(self.stats_collector)
+		self.log_path = log_path
 
-	def compress(self, crawler_result: CrawlerDto, max_threads: int = 10):
-		self.crawler_result = crawler_result
+	def compress(self, max_threads: int = 10):
+		crawler_result = FileSystemUtils.crawl(self.base_path_in)
 
 		process_started = round(time.time() * 1000)  # current time in ms
 
-		with ThreadPoolExecutor(max_workers=max_threads) as executor:
-			while not self.crawler_result.empty():
-				future = executor.submit(self.__perform_compression, self.crawler_result.pop())
-				print(future.result())
+		pool = ThreadPoolExecutor(max_workers=max_threads)
+		futures = pool.map(self.__perform_compression, crawler_result.files)
+
+		for future in futures:
+			if future is not None:
+				future.wait()
+
+		if len(self.failures) > 0 and self.log_path is not None:
+			f = open(self.log_path, 'w')
+			for failure in self.failures:
+				f.write(failure + '\n')
+			f.close()
 
 		time_taken_s = round((time.time() * 1000 - process_started) / 1000.0, 3)
-		print('Process ended in ' + str(time_taken_s) + 's')
+
+		print('{no_files} processed in {total_time}s with {failures} failures'.format(
+			no_files=crawler_result.get_files_count(), total_time=time_taken_s, failures=len(self.failures)))
+		print('\nBefore: {size_before}\nAfter: {size_after}\nSaved: {saved}\nCompression: {compression}%'.format(
+			size_before=self.stats_collector.get_total_bytes_in(),
+			size_after=self.stats_collector.get_total_bytes_out(), saved=self.stats_collector.get_diff(),
+			compression=self.stats_collector.get_actual_compression_ratio_percentage()))
 
 	def __perform_compression(self, file: str):
 		try:
-			output_file = FileSystemUtils.get_output_path(file)
-			ImageManipulator.compress(file, output_file, self.quality)
-			return True
-		except:
-			return False
-
+			output_file = FileSystemUtils.get_output_path(file, self.base_path_in, self.base_path_out)
+			self.image_manipulator.compress(file, output_file, self.quality)
+		except Exception as e:
+			self.failures.append(file + ' - ' + str(e))

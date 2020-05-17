@@ -15,11 +15,11 @@ class FileSystemUtils(object):
 	def crawl(path: str) -> CrawlerDto:
 		result = CrawlerDto()
 
-		for root, dirs, files in os.walk('path', topdown=False, followlinks=False):
+		for root, dirs, files in os.walk(path, topdown=False, followlinks=False):
 			for file in files:
 				file_name, file_extension = os.path.splitext(file)
 				if file_extension.lower() in FileSystemUtils.IMAGE_EXTENSIONS:
-					result.push(file)
+					result.push(os.path.join(root, file))
 
 		return result
 
@@ -33,12 +33,12 @@ class FileSystemUtils(object):
 		:return: The new full path of the image
 		"""
 		new_img_path = file_in.replace(input_base_path, output_base_path)
-		file_name, file_path = FileSystemUtils._split_file_name(new_img_path)
-		os.makedirs(file_path)
+		file_path, file_name = FileSystemUtils.split_file_name(new_img_path)
+		os.makedirs(file_path, exist_ok=True)
 		return new_img_path
 
 	@staticmethod
-	def _split_file_name(file_path: str) -> (str, str):
+	def split_file_name(file_path: str) -> (str, str):
 		"""
 		Split file name and rest of the path
 		:param file_path: The full path to the file
