@@ -24,6 +24,7 @@ The idea is that after running the program you could effortlessly switch to the 
 | --output      | Yes      | The base directory (or image path) where the compressed image(s) will be saved         |
 | --quality     | Yes      | A value 1-100 of the output quality, where 100 is the current quality (no compression) |
 | --logs        | No       | The file where to write the failures                                                   |
+| --threads     | No       | The number of files to use to compress. Defaults to 10                                 |
 
 #### Example of application on a Prestashop store
 
