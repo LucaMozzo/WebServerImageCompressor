@@ -1,21 +1,19 @@
-import sys
+import argparse
 from console_progressbar import ProgressBar
 
 from Compressor.Compressor import Compressor
 
 
 def main():
-    if len(sys.argv) < 3:
-        print('3 arguments expected but ' + str(len(sys.argv)) + ' received.\n\nThe required arguments are\n1. Source '
-                                                                 'file or folder\n2. Destination file or folder\n3. '
-                                                                 'Output quality (1-100)\n\nExample: python compress.py '
-                                                                 './source ./output 75')
-        return
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source', help='Source folder or file', required=True)
+    parser.add_argument('--output', help='Destination folder or file', required=True)
+    parser.add_argument('--quality', help='Quality (1-100)', type=int, required=True)
+    parser.add_argument('--logs', help='Where to write failurequality  logs', required=False)
+    args = parser.parse_args()
 
-    compressor = Compressor(sys.argv[0], sys.argv[1], int(sys.argv[2])) #TODO check if valid paths, if quality is integer
+    compressor = Compressor(args.source, args.output, args.quality, args.logs) #TODO cmake it work for single image
     compressor.compress()
-
-
 
 if __name__ == "__main__":
     main()
