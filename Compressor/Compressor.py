@@ -1,10 +1,11 @@
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+from console_progressbar import ProgressBar
+
 from Compressor.CompressionStatsCollector import CompressionStatsCollector
 from Compressor.FileSystemUtils import FileSystemUtils
 from Compressor.ImageManipulator import ImageManipulator
-from console_progressbar import ProgressBar
 
 
 class Compressor(object):
