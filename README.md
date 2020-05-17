@@ -1,5 +1,7 @@
 # Image Compressor for Web Servers
 
+![Screenshot example](screenshot.png)
+
 This program has been created to reduce the size on web servers to increase the performance of the page loading. Despite my efforts to make the program as generic as possible, I must admit that it's been designed around my need to batch-compress all the images in one of my customers' Prestashop store.
 
 ## How it works
@@ -20,11 +22,11 @@ The idea is that after running the program you could effortlessly switch to the 
 
 | Argument name | Required | Description                                                                            |
 |---------------|----------|----------------------------------------------------------------------------------------|
-| --source      | Yes      | The base directory (or the image path) where the image(s) is(are)                      |
-| --output      | Yes      | The base directory (or image path) where the compressed image(s) will be saved         |
+| --source      | Yes      | The base directory where the images are                                                |
+| --output      | Yes      | The base directory where the compressed images will be saved                           |
 | --quality     | Yes      | A value 1-100 of the output quality, where 100 is the current quality (no compression) |
 | --logs        | No       | The file where to write the failures                                                   |
-| --threads     | No       | The number of files to use to compress. Defaults to 10                                 |
+| --threads     | No       | The number of threads to use to compress. Defaults to 10                                 |
 
 #### Example of application on a Prestashop store
 
